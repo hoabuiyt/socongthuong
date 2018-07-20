@@ -2,24 +2,34 @@ package vn.qti.socongthuong.model;
 
 import java.util.List;
 
-public class KQTV {
+public class KQTV<T> {
 
 	Integer total;
-	List<Object> items;
-	
-	
+	List<T> items;
+
+	public KQTV() {
+	}
+
+	public KQTV(int size, List<T> nnkd) {
+		this.total = size;
+		this.items = nnkd;
+	}
+
 	public Integer getTotal() {
 		return total;
 	}
+
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
-	public List<Object> getItems() {
+
+	public List<T> getItems() {
 		return items;
 	}
-	public void setItems(List<Object> items) {
+
+	public void setItems(List<T> items) {
 		this.items = items;
 	}
-	
-	
+
+
 }
