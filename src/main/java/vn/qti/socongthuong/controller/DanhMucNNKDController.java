@@ -38,7 +38,7 @@ public class DanhMucNNKDController {
 		return new KQTVDanhMucNNKD(nnkd.size(), nnkd);
 	}
 	
-	/*@GetMapping("/gendanhmuc")
+	@GetMapping("/gendanhmuc")
 	public String genDanhMuc() {
 		for (int i = 0; i < 2000; i++) {
 			DanhMucNNKD nnkd = new DanhMucNNKD();
@@ -46,7 +46,7 @@ public class DanhMucNNKDController {
 			danhMucNNKDRepository.save(nnkd);
 		}		
 		return "OK";
-	}*/
+	}
 
 	@GetMapping("/getDanhMucNNKD")
 	public KQTVDanhMucNNKD getDanhMucNNKD(@RequestParam(value = "keyword") String tenDanhMuc, @RequestParam(value = "page") String page, @RequestParam(value = "pageSize") String pageSize) {
