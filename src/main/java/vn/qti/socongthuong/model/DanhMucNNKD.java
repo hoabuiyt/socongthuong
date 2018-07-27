@@ -39,5 +39,4 @@ public class DanhMucNNKD implements Serializable{
 		this.tenDanhMuc = tenDanhMuc;
 	}
 	
-	
 }

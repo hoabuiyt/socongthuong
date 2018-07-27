@@ -1,5 +1,6 @@
 package vn.qti.socongthuong.controller;
 
+import java.util.Comparator;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -36,18 +37,29 @@ public class DanhMucNNKDController {
 		System.out.println("findAll: " + nnkd.size());
 		return new KQTVDanhMucNNKD(nnkd.size(), nnkd);
 	}
+	
+	/*@GetMapping("/gendanhmuc")
+	public String genDanhMuc() {
+		for (int i = 0; i < 2000; i++) {
+			DanhMucNNKD nnkd = new DanhMucNNKD();
+			nnkd.setTenDanhMuc("Danh mục "+ i);
+			danhMucNNKDRepository.save(nnkd);
+		}		
+		return "OK";
+	}*/
 
 	@GetMapping("/getDanhMucNNKD")
-	public KQTVDanhMucNNKD getDanhMucNNKD(@RequestParam(value = "keyword") String tenDanhMuc, @RequestParam(value = "page") String page,
-			@RequestParam(value = "pageSize") String pageSize) {
+	public KQTVDanhMucNNKD getDanhMucNNKD(@RequestParam(value = "keyword") String tenDanhMuc, @RequestParam(value = "page") String page, @RequestParam(value = "pageSize") String pageSize) {
 
 		List<DanhMucNNKD> sourceList = (List<DanhMucNNKD>) danhMucNNKDRepository.getBytenDanhMucContaining(tenDanhMuc.toString());
+
+		sourceList.sort(Comparator.comparingLong(DanhMucNNKD::getIdDanhMuc).reversed());
 		int total = sourceList.size();
 
 		// kiểm tra _page ==> mặc định trả về 1
 		int _page = (page.isEmpty() || Integer.parseInt(page) < 1) ? 1 : (Integer.parseInt(page));
 		// kiểm tra PageSize ==> mặc định trả về 10
-		int _pageSize = (pageSize.isEmpty() || pageSize.toString() == "") ? 10 : (Integer.parseInt(pageSize));
+		int _pageSize = (pageSize.isEmpty() || pageSize.toString() == "") ? 20 : (Integer.parseInt(pageSize));
 
 		// giá trí đặt biệt < 0 ==> trả về tất cả
 		if (_pageSize <= 0) {
@@ -71,7 +83,7 @@ public class DanhMucNNKDController {
 		
 		Pageable pageable = new PageRequest(_page,_pageSize,Sort.Direction.DESC,"idDanhMuc");
 		
-		Page<DanhMucNNKD> sourceList = (Page<DanhMucNNKD>) danhMucNNKDRepository.getBytenDanhMucContaining('%'+tenDanhMuc+'%',pageable);		
+		Page<DanhMucNNKD> sourceList = (Page<DanhMucNNKD>) danhMucNNKDRepository.getBytenDanhMucContaining(tenDanhMuc,pageable);		
 		
 		return sourceList;
 		
@@ -86,7 +98,7 @@ public class DanhMucNNKDController {
 			System.out.println("khong tim thay");
 			return null;
 		} else {
-			System.out.println("get don vi " + nnkd.getIdDanhMuc());
+			System.out.println("get NNKD id: " + nnkd.getIdDanhMuc());
 			return nnkd;
 		}
 	}
@@ -101,16 +113,15 @@ public class DanhMucNNKDController {
 
 	// XÓA
 	@RequestMapping(method = RequestMethod.POST, value = "delete/{id}")
-	public String deleteNNKD(@PathVariable("id") Long idDanhMuc) {
+	public Boolean deleteNNKD(@PathVariable("id") Long idDanhMuc) {
 		System.out.println("Delete DanhMucNNKD with ID = " + idDanhMuc + "...");
 		try {
 			DanhMucNNKD nnkd = danhMucNNKDRepository.findByidDanhMuc(idDanhMuc);
 			danhMucNNKDRepository.delete(nnkd);
 		} catch (Exception e) {
-			return "Fail to delete!";
+			return false;
 		}
-
-		return "NNKD has been deleted!";
+		return true;
 	}
 
 	// Update a NNKD
